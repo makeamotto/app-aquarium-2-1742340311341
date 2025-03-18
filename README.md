@@ -1,2 +1,3 @@
-# app-aquarium-2-1742340311341
+# Aquarium 2
+
 A simple game using Three.js
