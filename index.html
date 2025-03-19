@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Fish Aquarium</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #87CEEB;
+        }
+        #aquarium {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #87CEEB, #1E90FF);
+        }
+        .fish {
+            position: absolute;
+            width: 50px;
+            height: 30px;
+            background-image: url('fish.png');
+            background-size: cover;
+            animation: swim 10s linear infinite;
+        }
+        @keyframes swim {
+            0% {
+                transform: translateX(100vw);
+            }
+            100% {
+                transform: translateX(-100px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="aquarium"></div>
+    <script>
+        const aquarium = document.getElementById('aquarium');
+
+        function createFish() {
+            const fish = document.createElement('div');
+            fish.classList.add('fish');
+            fish.style.top = Math.random() * (window.innerHeight - 30) + 'px';
+            aquarium.appendChild(fish);
+
+            setTimeout(() => {
+                fish.remove();
+            }, 10000);
+        }
+
+        setInterval(createFish, 2000);
+    </script>
+</body>
+</html>
