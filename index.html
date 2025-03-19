@@ -15,28 +15,9 @@
             width: 50px;
             height: 30px;
             background-color: orange;
-            border-radius: 50%;
+            border-radius: 50% 50% 50% 50%;
             transform-origin: center;
             transition: transform 0.1s linear;
-        }
-        .fish::before, .fish::after {
-            content: '';
-            position: absolute;
-            background-color: orange;
-            border-radius: 50%;
-        }
-        .fish::before {
-            width: 20px;
-            height: 20px;
-            top: 5px;
-            left: -10px;
-        }
-        .fish::after {
-            width: 10px;
-            height: 10px;
-            top: 10px;
-            right: -5px;
-            background-color: white;
         }
     </style>
 </head>
@@ -52,23 +33,21 @@
             const dx = targetX - rect.left;
             const dy = targetY - rect.top;
             const angle = Math.atan2(dy, dx);
-            const newX = rect.left + Math.cos(angle) * 2;
-            const newY = rect.top + Math.sin(angle) * 2;
-            fish.style.transform = `translate(${newX}px, ${newY}px) rotate(${angle}rad)`;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            const moveDistance = Math.min(2, distance);
+            fish.style.transform = `translate(${rect.left + Math.cos(angle) * moveDistance}px, ${rect.top + Math.sin(angle) * moveDistance}px) rotate(${angle}rad)`;
         }
 
         function animate() {
-            const rect1 = fish1.getBoundingClientRect();
-            const rect2 = fish2.getBoundingClientRect();
-            moveFish(fish1, rect2.left, rect2.top);
-            moveFish(fish2, rect1.left, rect1.top);
+            const fish1Rect = fish1.getBoundingClientRect();
+            const fish2Rect = fish2.getBoundingClientRect();
+            moveFish(fish1, fish2Rect.left, fish2Rect.top);
+            moveFish(fish2, fish1Rect.left, fish1Rect.top);
             requestAnimationFrame(animate);
         }
 
-        fish1.style.left = '100px';
-        fish1.style.top = '100px';
-        fish2.style.left = '300px';
-        fish2.style.top = '300px';
+        fish1.style.transform = 'translate(100px, 100px)';
+        fish2.style.transform = 'translate(300px, 300px)';
 
         animate();
     </script>
