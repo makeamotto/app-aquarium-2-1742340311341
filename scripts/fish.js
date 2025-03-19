@@ -1,107 +1,99 @@
-```javascript
 // scripts/fish.js
 
 class Fish {
-    constructor(id, x, y, color) {
+    constructor(id, x, y, speed, color) {
         this.id = id;
         this.x = x;
         this.y = y;
+        this.speed = speed;
         this.color = color;
-        this.size = Math.random() * 10 + 5; // Random size between 5 and 15
-        this.speed = Math.random() * 2 + 1; // Random speed between 1 and 3
-        this.direction = Math.random() * 2 * Math.PI; // Random direction in radians
+        this.element = this.createFishElement();
+        this.target = null;
     }
 
-    draw(context) {
-        context.fillStyle = this.color;
-        context.beginPath();
-        context.ellipse(this.x, this.y, this.size, this.size / 2, this.direction, 0, 2 * Math.PI);
-        context.fill();
+    createFishElement() {
+        const fishElement = document.createElement('div');
+        fishElement.className = 'fish';
+        fishElement.style.backgroundColor = this.color;
+        fishElement.style.position = 'absolute';
+        fishElement.style.width = '20px';
+        fishElement.style.height = '10px';
+        fishElement.style.borderRadius = '50%';
+        fishElement.style.transform = 'rotate(0deg)';
+        document.body.appendChild(fishElement);
+        return fishElement;
     }
 
-    updatePosition(fishes) {
-        const alignment = this.align(fishes);
-        const cohesion = this.cohere(fishes);
-        const separation = this.separate(fishes);
+    updatePosition() {
+        if (this.target) {
+            const dx = this.target.x - this.x;
+            const dy = this.target.y - this.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
 
-        this.direction += alignment + cohesion + separation;
-        this.x += Math.cos(this.direction) * this.speed;
-        this.y += Math.sin(this.direction) * this.speed;
-
-        // Keep fish within bounds
-        this.x = (this.x + window.innerWidth) % window.innerWidth;
-        this.y = (this.y + window.innerHeight) % window.innerHeight;
-    }
-
-    align(fishes) {
-        let avgDirection = 0;
-        let count = 0;
-        for (const fish of fishes) {
-            if (fish.id !== this.id) {
-                avgDirection += fish.direction;
-                count++;
+            if (distance > 1) {
+                this.x += (dx / distance) * this.speed;
+                this.y += (dy / distance) * this.speed;
+                const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+                this.element.style.transform = `rotate(${angle}deg)`;
             }
         }
-        if (count > 0) {
-            avgDirection /= count;
-            return (avgDirection - this.direction) * 0.05;
-        }
-        return 0;
+
+        this.element.style.left = `${this.x}px`;
+        this.element.style.top = `${this.y}px`;
     }
 
-    cohere(fishes) {
-        let avgX = 0;
-        let avgY = 0;
-        let count = 0;
-        for (const fish of fishes) {
-            if (fish.id !== this.id) {
-                avgX += fish.x;
-                avgY += fish.y;
-                count++;
-            }
-        }
-        if (count > 0) {
-            avgX /= count;
-            avgY /= count;
-            const angleToCenter = Math.atan2(avgY - this.y, avgX - this.x);
-            return (angleToCenter - this.direction) * 0.01;
-        }
-        return 0;
-    }
-
-    separate(fishes) {
-        let moveX = 0;
-        let moveY = 0;
-        for (const fish of fishes) {
-            if (fish.id !== this.id) {
-                const distance = Math.hypot(fish.x - this.x, fish.y - this.y);
-                if (distance < 20) {
-                    moveX += this.x - fish.x;
-                    moveY += this.y - fish.y;
-                }
-            }
-        }
-        const angleAway = Math.atan2(moveY, moveX);
-        return (angleAway - this.direction) * 0.1;
+    setTarget(targetFish) {
+        this.target = targetFish;
     }
 }
 
-export function createFishes(numFishes) {
-    const fishes = [];
-    for (let i = 0; i < numFishes; i++) {
-        const x = Math.random() * window.innerWidth;
-        const y = Math.random() * window.innerHeight;
-        const color = `hsl(${Math.random() * 360}, 100%, 50%)`;
-        fishes.push(new Fish(i, x, y, color));
+class FishTank {
+    constructor() {
+        this.fishes = [];
     }
-    return fishes;
+
+    addFish(fish) {
+        this.fishes.push(fish);
+    }
+
+    update() {
+        this.fishes.forEach(fish => {
+            const otherFishes = this.fishes.filter(f => f !== fish);
+            if (otherFishes.length > 0) {
+                const closestFish = this.findClosestFish(fish, otherFishes);
+                fish.setTarget(closestFish);
+            }
+            fish.updatePosition();
+        });
+    }
+
+    findClosestFish(fish, otherFishes) {
+        let closestFish = null;
+        let minDistance = Infinity;
+
+        otherFishes.forEach(otherFish => {
+            const dx = otherFish.x - fish.x;
+            const dy = otherFish.y - fish.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestFish = otherFish;
+            }
+        });
+
+        return closestFish;
+    }
 }
 
-export function updateFishes(fishes, context) {
-    context.clearRect(0, 0, window.innerWidth, window.innerHeight);
-    for (const fish of fishes) {
-        fish.updatePosition(fishes);
-        fish.draw(context);
-    }
+// Example usage
+const fishTank = new FishTank();
+fishTank.addFish(new Fish(1, 100, 100, 2, 'red'));
+fishTank.addFish(new Fish(2, 200, 200, 2, 'blue'));
+
+function animate() {
+    fishTank.update();
+    requestAnimationFrame(animate);
 }
-```
+
+animate();
