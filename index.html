@@ -3,24 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fish Flocking Simulation</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Fish Chase</title>
     <style>
-        body, html {
+        body {
             margin: 0;
-            padding: 0;
             overflow: hidden;
-            height: 100%;
+            background-color: #87CEEB;
         }
-        #fishCanvas {
-            display: block;
-            width: 100vw;
-            height: 100vh;
+        .fish {
+            position: absolute;
+            width: 50px;
+            height: 30px;
+            background-color: orange;
+            border-radius: 50% 50% 50% 50%;
+            transform: rotate(45deg);
+        }
+        .fish::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: orange;
+            border-radius: 50%;
+            top: -10px;
+            left: 15px;
+            transform: rotate(-45deg);
+        }
+        .fish::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: white;
+            border-radius: 50%;
+            top: 5px;
+            left: 35px;
         }
     </style>
 </head>
 <body>
-    <canvas id="fishCanvas"></canvas>
-    <script src="script.js" defer></script>
+    <div id="fish1" class="fish"></div>
+    <div id="fish2" class="fish"></div>
+    <script>
+        const fish1 = document.getElementById('fish1');
+        const fish2 = document.getElementById('fish2');
+
+        function moveFish(fish, targetX, targetY) {
+            const rect = fish.getBoundingClientRect();
+            const dx = targetX - rect.left;
+            const dy = targetY - rect.top;
+            const angle = Math.atan2(dy, dx);
+            const speed = 2;
+            fish.style.left = rect.left + Math.cos(angle) * speed + 'px';
+            fish.style.top = rect.top + Math.sin(angle) * speed + 'px';
+        }
+
+        function animate() {
+            const targetX = Math.random() * window.innerWidth;
+            const targetY = Math.random() * window.innerHeight;
+            moveFish(fish1, targetX, targetY);
+            const fish1Rect = fish1.getBoundingClientRect();
+            moveFish(fish2, fish1Rect.left, fish1Rect.top);
+            requestAnimationFrame(animate);
+        }
+
+        fish1.style.left = '100px';
+        fish1.style.top = '100px';
+        fish2.style.left = '200px';
+        fish2.style.top = '200px';
+
+        animate();
+    </script>
 </body>
 </html>
