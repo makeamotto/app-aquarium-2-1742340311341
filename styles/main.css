@@ -1,0 +1,88 @@
+/* Main CSS file for styling the application */
+
+/* General body styling */
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #e0f7fa;
+    font-family: Arial, sans-serif;
+}
+
+/* Aquarium environment */
+.aquarium {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(to bottom, #00bcd4, #006064);
+    overflow: hidden;
+}
+
+/* Fish styling */
+.fish {
+    position: absolute;
+    width: 50px;
+    height: 30px;
+    background-color: #ff5722;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    transition: transform 0.2s ease;
+    animation: swim 2s infinite;
+}
+
+.fish::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    width: 20px;
+    height: 20px;
+    background-color: #ff5722;
+    border-radius: 50%;
+    transform: translateY(-50%);
+}
+
+.fish::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 10px;
+    height: 10px;
+    background-color: #fff;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Fish eye */
+.fish-eye {
+    position: absolute;
+    top: 10px;
+    left: 35px;
+    width: 5px;
+    height: 5px;
+    background-color: #000;
+    border-radius: 50%;
+}
+
+/* Flocking behavior */
+.fish.flocking {
+    transition: transform 0.2s ease;
+}
+
+.fish:hover {
+    transform: scale(1.1) rotate(-45deg);
+}
+
+/* Animation for fish movement */
+@keyframes swim {
+    0% {
+        transform: translateX(0) translateY(0) rotate(-45deg);
+    }
+    50% {
+        transform: translateX(20px) translateY(10px) rotate(-40deg);
+    }
+    100% {
+        transform: translateX(0) translateY(0) rotate(-45deg);
+    }
+}
