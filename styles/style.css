@@ -1,0 +1,84 @@
+/* Main Stylesheet for the Application */
+
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #e0f7fa;
+  overflow: hidden;
+}
+
+/* Fish Styles */
+.fish {
+  position: absolute;
+  width: 50px;
+  height: 30px;
+  background-color: #ffcc80;
+  border-radius: 50% 50% 50% 50%;
+  transition: transform 0.5s ease;
+}
+
+.fish::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  width: 20px;
+  height: 20px;
+  background-color: #ffcc80;
+  border-radius: 50%;
+  transform: translateY(-50%);
+}
+
+.fish::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 5px;
+  width: 10px;
+  height: 10px;
+  background-color: #fff;
+  border-radius: 50%;
+  transform: translateY(-50%);
+}
+
+/* Fish Animation */
+@keyframes swim {
+  0% {
+    transform: translateX(0) translateY(0);
+  }
+  50% {
+    transform: translateX(20px) translateY(-10px);
+  }
+  100% {
+    transform: translateX(0) translateY(0);
+  }
+}
+
+.fish.chasing {
+  animation: swim 1s infinite;
+}
+
+/* Water Styles */
+.water {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.water::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, #4fc3f7, #0288d1);
+  opacity: 0.5;
+}
