@@ -1,0 +1,78 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #e0f7fa;
+  overflow: hidden;
+}
+
+.container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.fish {
+  position: absolute;
+  width: 50px;
+  height: 30px;
+  background-color: #ffcc80;
+  border-radius: 50% 50% 50% 50%;
+  transform: rotate(45deg);
+  transition: transform 0.2s ease-in-out;
+}
+
+.fish::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  width: 20px;
+  height: 20px;
+  background-color: #ffcc80;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.fish::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  background-color: #ff7043;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.fish-eye {
+  position: absolute;
+  top: 20%;
+  left: 70%;
+  width: 5px;
+  height: 5px;
+  background-color: #000;
+  border-radius: 50%;
+}
+
+.fish:hover {
+  transform: rotate(45deg) scale(1.1);
+}
+
+@keyframes swim {
+  0% {
+    transform: translateX(0) translateY(0);
+  }
+  50% {
+    transform: translateX(15px) translateY(10px);
+  }
+  100% {
+    transform: translateX(0) translateY(0);
+  }
+}
+
+.fish-chase {
+  animation: swim 1s infinite alternate;
+}
